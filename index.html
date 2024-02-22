@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/handtrackjs@0.1.5/dist/handtrack.min.js"></script>
+
+        <style type="text/css">
+            body, html {
+                padding: 0;
+                margin: 0;
+                /* background-image: url('https://simplesignman.ca/cdn/shop/files/Canvas_1200x1200.jpg?v=1693420831');
+                background-repeat: no-repeat;
+                background-size: cover;
+                height: 100vh;
+                width: 100%; */
+            }
+
+            canvas {
+                position: fixed;
+                display: block;
+                top: 0;
+                left: 0;
+                opacity: 1;
+            }
+
+            video {
+                height: 100vh;
+                width: 100vw;
+            }
+        </style>
+
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+        <main>
+            <video class="videobox canvasbox" autoplay="autoplay" id="myvideo"></video>
+        </main>
+        <script type="text/javascript" src="sketch.js"></script>
+    </body>
+</html>
