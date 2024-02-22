@@ -13,21 +13,21 @@ const modelParams = {
     maxNumBoxes: 20,
     scoreThreshold: 0.5,
     modelType: 'ssd320fpnlite',
-    modelSize: 'large',
+    modelSize: 'small',
 };
 
 function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     colorMode(RGB, 255);
     startVideo();
-    texturize(500);
+    texturize(200);
 }
 
 function draw() {
     frameRate(60);
 
     if (frameCount % 120 === 0) {
-        texturize(200);
+        texturize(500);
     }
     
     if (isVideo && frameCount - lastDetectionFrame > detectionInterval) {
@@ -81,7 +81,7 @@ function drawWatercolorEffect(predictions) {
 
     predictions.forEach((prediction, index) => {
         if (prediction.label !== 'face') {
-            if (prediction.label === 'closed' && prediction.score > 0.7) {
+            if (prediction.label === 'open' && prediction.score > 0.9) {
                 window.location.reload();
             }
 
@@ -91,7 +91,7 @@ function drawWatercolorEffect(predictions) {
             let brightness = colors[colorIndex].b;
             let x = prediction.bbox[0] * 3 + prediction.bbox[2];
             let y = prediction.bbox[1] * 4 + prediction.bbox[3];
-            let radius = 50;
+            let radius = 10;
             drawSpot(x, y, radius, hue, saturation, brightness);
 
             let key = `hand${index}`;
