@@ -7,13 +7,14 @@ let previousPositions = {};
 let lastDetectionFrame = -1;
 const detectionInterval = 100; 
 let lastHandDetectedTime = 0;
+let trackingCounter = 0;
 
 const modelParams = {
     flipHorizontal: true,
     maxNumBoxes: 20,
     scoreThreshold: 0.5,
     modelType: 'ssd320fpnlite',
-    modelSize: 'small',
+    modelSize: 'large',
 };
 
 function setup() {
@@ -36,6 +37,17 @@ function draw() {
     }
 
     drawRipples();
+
+    const canvas = document.getElementById('defaultCanvas0');
+    const computedStyle = window.getComputedStyle(canvas);
+    const opacity = computedStyle.getPropertyValue('opacity');
+    console.log(opacity);
+
+    if (opacity === '0') {
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    }
 }
 
 function startVideo() {
@@ -57,16 +69,30 @@ function startDetection() {
     }
 }
 
-function runDetection(){
+function runDetection() {
     if (Object.keys(model).length > 0) {
         model.detect(video).then(predictions => {
             Object.keys(predictions).forEach((prediction) => {
                 if (predictions[prediction].label !== 'face') {
                     drawWatercolorEffect(predictions);
-                } 
+                }
+
+                if (predictions.length >= 2 && predictions[prediction].label !== 'face') {
+                    trackingCounter = 1;
+                } else {
+                    trackingCounter = 0;
+                }
             })
         });
         requestAnimationFrame(runDetection);
+    }
+
+    if (trackingCounter === 0) {
+        setTimeout(() => {
+            document.getElementById('defaultCanvas0').classList.add('fadeOut');
+        }, 500);
+    } else {
+        document.getElementById('defaultCanvas0').classList.remove('fadeOut');
     }
 }
 
@@ -81,10 +107,6 @@ function drawWatercolorEffect(predictions) {
 
     predictions.forEach((prediction, index) => {
         if (prediction.label !== 'face') {
-            if (prediction.label === 'open' && prediction.score > 0.9) {
-                window.location.reload();
-            }
-
             let colorIndex = index % colors.length;
             let hue = colors[colorIndex].h;
             let saturation = colors[colorIndex].s;
@@ -100,8 +122,9 @@ function drawWatercolorEffect(predictions) {
             if (!previousPositions[key] || dist(x, y, previousPositions[key].x, previousPositions[key].y) > 50) {
                 ripples.push({
                     x, y, radius: 0, hue, alpha: 255, key: `ripple${index}`
-                });                
-            }
+                });
+                
+            } 
         }
     });
 }
